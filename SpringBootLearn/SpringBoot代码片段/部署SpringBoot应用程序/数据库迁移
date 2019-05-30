@@ -1,0 +1,47 @@
+数据库迁移：
+	1. 通过Spring Boot的spring.jpa.hibernate.ddl-auto属性将hibernate.hbm2ddl.auto属性设置为create、create_drop或update
+	
+	2. SpringBoot为两款流行的数据库迁移库提供了自动配置支持：
+		flyway：
+		Liquibase：
+		
+FlyWay： 仅限于SQL脚本，也就说明只能在一个数据平台上使用
+	非常简单的开源数据库迁移库，使用SQL来定义迁移脚本。
+	每个脚本都有一个版本号，FlyWay会顺序执行这些脚本，让数据库达到期望的状态。但数据脚本只能增加，一旦运行之后不能修改
+	
+	添加依赖：flyway-core
+	默认sql存放地址：classpath下的/db/migration路径下
+	同时将spring.jpa.hibernate.ddl-auto设置为none，来告诉Hibernate不要创建数据表
+	
+	// Flayway数据库初始脚本
+	# 创建Reader表
+	create table Reader(
+		id serial primary key,
+		username varchar(25) unique not null,
+		password varchar(25) not null,
+		fullname varchar(50) not null
+	);
+	
+	# 创建Book表
+	create table Book(
+		id serial primary key,
+		author varchar(50) not null,
+		description varchar(1000) not null,
+		isbn varchar(10) not null,
+		title varchar(250) not null,
+		reader_name varchar(25) not null,
+		foreign key (reader_name) references Reader(username)
+	);
+	
+	# 定义序列
+	create sequence hibernate_sequence;
+	
+	# Reader的初始数据
+	insert into Reader(username, password, fullname) values("craig", "password", "Craig Walls");
+	
+	保存格式：V2__initialize.sql  ==> 解释：  版本号+ 两个下划线 + sql描述 + “.sql”后缀 
+	
+	
+Liquibase：不限于SQL脚本，可以定义多种数据库脚本，不关心底层平台（其中包括XML、YAML和JSON）
+	添加依赖：liquibase-core
+	默认存放地址：classpathZ下的/db/changelog目录下

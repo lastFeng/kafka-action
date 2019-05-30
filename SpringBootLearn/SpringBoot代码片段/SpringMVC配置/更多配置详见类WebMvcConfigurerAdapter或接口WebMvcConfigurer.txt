@@ -1,0 +1,1 @@
+更多配置详见类WebMvcConfigurerAdapter或接口WebMvcConfigurer

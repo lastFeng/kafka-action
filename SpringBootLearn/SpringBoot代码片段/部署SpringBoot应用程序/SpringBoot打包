@@ -1,0 +1,5 @@
+// 在Maven中构建部署文件--添加<packing>war/jar</packing>等等
+
+// 在WebApplicationInitializer中的configure()方法中，定义配置了DispatchServlet、Filter、Serlvet等等
+
+// 利用maven的命令打包：mvn package  --> 在target目录里可以找到打包后的应用程序

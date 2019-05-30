@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.example.dao.PurchaseRecodeDao">
+	<!--增加订单-->
+	<insert id="insertPurchaseRecode" parameterType="purchaseRecode">    <!--使用pojo的别名-->
+		insert into t_purchase_recode(user_id, product_id, price, quantity, sum, purchase_date, note)
+				values(#{userId}, #{productId}, #{price}, #{quantity}, #{sum}, #{purchaseDate}, #{note})
+	</insert>
+</mapper>

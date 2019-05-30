@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>hello</title>
+</head>
+<body>
+    <h3 th:text="${info}"></h3>
+    <div>
+        <img alt="验证码" onclick="this.src='/defaultkaptcha?d='+new Date()*1" src="/defaultkaptcha" />
+    </div>
+    <form action="/check">
+        <input type="text" name="tryCode" />
+        <input type="submit" value="提交"/>
+    </form>
+</body>
+</html>
