@@ -15,10 +15,12 @@
  */
 package com.springboot.kafkaaction.consumer;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -34,19 +36,29 @@ import java.util.Properties;
 public class CustomerConsumer {
     public static void main(String[] args) {
         Properties props = new Properties();
+        // 集群
         props.put("bootstrap.servers", "localhost:9092");
+        // 消费者组id
         props.put( "group.id", "test");
+        // 是否自动提交--自动提交offset
         props.put( "enable.auto.commit", "true");
+        // 提交间隔时间，可能会出现数据不同步---数据读取成功之后，还未保存offset时出现问题，那么下次读取会出现重复消费已消费的数据
         props.put( "auto.commit.interval.ms", "1000");
+        // key的序列化
         props.put( "key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        // value的序列化
         props.put( "value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
         KafkaConsumer <String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Arrays.asList( "foo", "bar"));
+        // 订阅模式，指定订阅的topic
+        consumer.subscribe(Arrays.asList( "first"));
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(100);
+            // 通过poll来获取数据
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
             for (ConsumerRecord<String,String> record: records) {
-                System.out.printf(" offset = %d, key = %s, value = %s % n ",
-                    record.offset(), record.key(), record.value());
+                // 对获取的数据进行处理--存入哪里都行
+                System.out.printf(" offset = %d, key = %s, value = %s, partition=%d %n",
+                        record.offset(), record.key(), record.value(), record.partition());
             }
         }
     }
