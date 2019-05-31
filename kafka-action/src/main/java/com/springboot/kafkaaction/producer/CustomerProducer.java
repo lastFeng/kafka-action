@@ -15,9 +15,7 @@
  */
 package com.springboot.kafkaaction.producer;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 
 import java.util.Properties;
 
@@ -34,28 +32,42 @@ public class CustomerProducer {
     public static void main(String[] args) {
 
         /**
-         * Kafka配置信息
+         * Kafka配置信息,除了序列化优化时使用
          * */
         Properties props = new Properties();
         // kafka集群
         props.put("bootstrap.servers", "localhost:9092");
-        // 数据同步机制
-        props.put("acks", "all");
+        // 数据同步机制(all==-1)
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
         // 重试次数，0则是直接抛弃
         props.put("retries", 0);
         // 批量大小
         props.put("batch.size", 16384);
-        // 提交延迟
+        // 提交延迟,等待时间到达或者一次性发送批量大小达到上限时发送
         props.put("linger.ms", 1);
         // producer缓存数据大小
         props.put("buffer.memory", 33554432);
-        // key的序列化
+        // 设置分区自定义类
+        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.springboot.kafkaaction.producer.CustomerPartition");
+        // key的序列化，对key进行序列化
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        // value的序列化
+        // value的序列化， 对value进行序列化
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         Producer<String, String> producer = new KafkaProducer<>(props);
-        for (int i = 0; i < 100; i++) {
-            producer.send(new ProducerRecord<String, String>("my-topic", Integer.toString(i), Integer.toString(i)));
+        for (int i = 0; i < 10; i++) {
+            // 发送生产数据
+//            producer.send(new ProducerRecord<String, String>("first", Integer.toString(i), Integer.toString(i)));
+
+            // 添加回调函数的参数
+            producer.send(new ProducerRecord<String, String>("first", Integer.toString(i), Integer.toString(i)),
+                    (recordMetadata, exception) -> {
+                        if (exception != null){
+                            System.out.println("发送失败");
+                        }
+                        else{
+                            System.out.println(recordMetadata.partition() + "-----" + recordMetadata.offset());
+                        }
+                    });
         }
         producer.close();
     }
