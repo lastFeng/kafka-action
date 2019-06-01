@@ -17,6 +17,8 @@ package com.springboot.kafkaaction.producer;
 
 import org.apache.kafka.clients.producer.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -53,6 +55,12 @@ public class CustomerProducer {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         // value的序列化， 对value进行序列化
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        // 添加拦截器
+        List<String> interceptors = new ArrayList<>();
+        interceptors.add("com.springboot.kafkaaction.interceptor.CustomerProducerInterceptor");
+        props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
+
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 10; i++) {
             // 发送生产数据
