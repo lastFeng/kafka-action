@@ -55,7 +55,7 @@ public class CustomerConsumer {
 
         KafkaConsumer <String, String> consumer = new KafkaConsumer<>(props);
         // 订阅模式，指定订阅的topic
-        consumer.subscribe(Arrays.asList( "first"));
+        consumer.subscribe(Arrays.asList( "second"));
         while (true) {
             // 通过poll来获取数据
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
