@@ -66,10 +66,10 @@ public class CustomerMultiThreadProducer implements Runnable{
     public void run() {
         producer.send(record, (recordMetadata, exception) -> {
             if (exception != null){
-                System.out.println("发送失败");
+                logger.error("发送失败");
             }
             else{
-                System.out.println(recordMetadata.partition() + "-----" + recordMetadata.offset());
+                logger.info(recordMetadata.partition() + "-----" + recordMetadata.offset());
             }
         });
     }
