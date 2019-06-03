@@ -16,15 +16,12 @@
 package com.springboot.kafkaaction.producer;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.springboot.kafkaaction.property.ProducerProperties;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -79,30 +76,8 @@ public class CustomerMultiThreadProducer implements Runnable{
      * 测试
      * */
     public static void main(String[] args) {
-        Properties props = new Properties();
-        // kafka集群
-        props.put("bootstrap.servers", "localhost:9092");
-        // 数据同步机制(all==-1)
-        props.put(ProducerConfig.ACKS_CONFIG, "all");
-        // 重试次数，0则是直接抛弃
-        props.put("retries", 0);
-        // 批量大小
-        props.put("batch.size", 16384);
-        // 提交延迟,等待时间到达或者一次性发送批量大小达到上限时发送
-        props.put("linger.ms", 1);
-        // producer缓存数据大小
-        props.put("buffer.memory", 33554432);
-        // 设置分区自定义类
-        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomerPartition.class.getName());
-        // key的序列化，对key进行序列化
-        props.put("key.serializer", StringSerializer.class.getName());
-        // value的序列化， 对value进行序列化
-        props.put("value.serializer", StringSerializer.class.getName());
 
-        // 添加拦截器
-        List<String> interceptors = new ArrayList<>();
-        interceptors.add("com.springboot.kafkaaction.interceptor.CustomerProducerInterceptor");
-        props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
+        Properties props = ProducerProperties.setProducerProperties();
 
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props);
 
