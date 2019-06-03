@@ -15,7 +15,7 @@
  */
 package com.springboot.kafkaaction.consumer;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import com.springboot.kafkaaction.property.PropertiesUtil;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -35,23 +35,7 @@ import java.util.Properties;
  */
 public class CustomerConsumer {
     public static void main(String[] args) {
-        Properties props = new Properties();
-        // 集群
-        props.put("bootstrap.servers", "localhost:9092");
-        // 消费者组id
-        props.put( "group.id", "test");
-
-        // 设置读取信息的偏移量，默认是latest:最新信息--- earliest:最早数据（数据过时之后，数据偏移量不是从0开始）
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-        // 是否自动提交--自动提交offset
-        props.put( "enable.auto.commit", "true");
-        // 提交间隔时间，可能会出现数据不同步---数据读取成功之后，还未保存offset时出现问题，那么下次读取会出现重复消费已消费的数据
-        props.put( "auto.commit.interval.ms", "1000");
-        // key的序列化
-        props.put( "key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        // value的序列化
-        props.put( "value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        Properties props = PropertiesUtil.setConsumerProperties();
 
         KafkaConsumer <String, String> consumer = new KafkaConsumer<>(props);
         // 订阅模式，指定订阅的topic

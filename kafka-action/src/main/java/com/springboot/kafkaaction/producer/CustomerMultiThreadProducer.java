@@ -16,7 +16,7 @@
 package com.springboot.kafkaaction.producer;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.springboot.kafkaaction.property.ProducerProperties;
+import com.springboot.kafkaaction.property.PropertiesUtil;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public class CustomerMultiThreadProducer implements Runnable{
      * */
     public static void main(String[] args) {
 
-        Properties props = ProducerProperties.setProducerProperties();
+        Properties props = PropertiesUtil.setProducerProperties();
 
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props);
 

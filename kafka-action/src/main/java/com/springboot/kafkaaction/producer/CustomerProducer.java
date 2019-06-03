@@ -15,7 +15,7 @@
  */
 package com.springboot.kafkaaction.producer;
 
-import com.springboot.kafkaaction.property.ProducerProperties;
+import com.springboot.kafkaaction.property.PropertiesUtil;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -34,7 +34,7 @@ import java.util.Properties;
 public class CustomerProducer {
     public static void main(String[] args) {
 
-        Properties props = ProducerProperties.setProducerProperties();
+        Properties props = PropertiesUtil.setProducerProperties();
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (int i = 0; i < 10; i++) {
