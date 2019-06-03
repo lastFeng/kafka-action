@@ -2,8 +2,6 @@ package com.springboot.kafkaaction.stream;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.processor.Processor;
-import org.apache.kafka.streams.processor.ProcessorSupplier;
 
 import java.util.Properties;
 
@@ -24,7 +22,8 @@ public class KafkaStream {
 //        ProcessorSupplier processorSupplier = () -> new ProcessorSupplierImp();
 
         topology.addProcessor("PROCESSOR", () -> new ProcessorSupplierImp(), "SOURCE");
-
+        // SINK的TOPIC要与SOURCE的TOPIC不相同，在消费者消费时，也是使用SINK的TOPIC进行消费
+        // 如果是相同的情况下，会出现无限循环的情况
         topology.addSink("SINK", "second", "PROCESSOR");
         // 属性
         Properties props = new Properties();
