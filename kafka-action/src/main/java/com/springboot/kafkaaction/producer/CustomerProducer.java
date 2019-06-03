@@ -15,7 +15,12 @@
  */
 package com.springboot.kafkaaction.producer;
 
-import org.apache.kafka.clients.producer.*;
+import com.springboot.kafkaaction.interceptor.CustomerProducerInterceptor;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +55,15 @@ public class CustomerProducer {
         // producer缓存数据大小
         props.put("buffer.memory", 33554432);
         // 设置分区自定义类
-        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.springboot.kafkaaction.producer.CustomerPartition");
+        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomerPartition.class.getName());
         // key的序列化，对key进行序列化
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("key.serializer", StringSerializer.class.getName());
         // value的序列化， 对value进行序列化
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", StringSerializer.class.getName());
 
         // 添加拦截器
         List<String> interceptors = new ArrayList<>();
-        interceptors.add("com.springboot.kafkaaction.interceptor.CustomerProducerInterceptor");
+        interceptors.add(CustomerProducerInterceptor.class.getName());
         props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 
         Producer<String, String> producer = new KafkaProducer<>(props);
